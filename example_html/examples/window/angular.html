@@ -1,59 +1,593 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="KendoDemos">
 <head>
     <title>AngularJS</title>
     <meta charset="utf-8">
+    <!--
     <link href="../content/shared/styles/examples-offline.css" rel="stylesheet">
-    <link href="../../styles/kendo.common.min.css" rel="stylesheet">
     <link href="../../styles/kendo.rtl.min.css" rel="stylesheet">
-    <link href="../../styles/kendo.default.min.css" rel="stylesheet">
-    <link href="../../styles/kendo.default.mobile.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.common.min.css" />
+    <!--<link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.metro.min.css" />
+    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.metro.mobile.min.css" />
+-->
+    <link href="../content/shared/styles/examples-offline.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.nova.min.css" />
+    <link rel="stylesheet" href="//kendo.cdn.telerik.com/2016.3.914/styles/kendo.nova.mobile.min.css" />
+    <!--
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.3.914/styles/kendo.common.min.css"/>
+     <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.3.914/styles/kendo.rtl.min.css"/>
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.3.914/styles/kendo.metro.min.css"/>
+    <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2016.3.914/styles/kendo.metro.mobile.all.min.css"/>
+-->
+
     <script src="../../js/jquery.min.js"></script>
     <script src="../../js/jszip.min.js"></script>
     <script src="../../js/angular.min.js"></script>
     <script src="../../js/kendo.all.min.js"></script>
     <script src="../content/shared/js/console.js"></script>
+    <script src="./jquery-watch.js"></script>
     <script>
-        
+
     </script>
-    
-    
+
+
 </head>
-<body>
-    
-        <a class="offline-button" href="../index.html">Back</a>
-    
-    <div id="example" ng-app="KendoDemos">
+<body ng-view resize>
     <div ng-controller="MyCtrl">
-        <div class="demo-section k-content">
-            <button class="k-button" ng-show="!win1visible" ng-click="win1.open()">Open Calendar</button>
-            <button class="k-button" ng-show="!win2visible" ng-click="win2.open()">Open AJAX content</button>
+
+        <a class="offline-button" href="../index.html">Export Brochure to Excel</a>
+        <div kendo-window="wBrochureMain" k-title="'Brochure Forecast: UK 2017/01 '"
+            k-width="1400" k-height="385" k-visible="true"
+            k-content="{ url: '../spreadsheet/index.html' }">
         </div>
-        <div kendo-window="win1" k-title="'Calendar'" k-on-open="win1visible = true" k-on-close="win1visible = false">
-            <div kendo-calendar></div>
+        <div kendo-window="wBrochureHistory" k-title="'Brochure History'"
+             k-width="400" k-height="300" k-visible="false"
+             k-content="{ url: '../content/web/loremIpsum.html' }">
         </div>
-      
-        <div kendo-window="win2" k-title="'AJAX content'"
-            k-width="600" k-height="200" k-visible="false"
-            k-content="{ url: '../content/web/loremIpsum.html' }"
-            k-on-open="win2visible = true" k-on-close="win2visible = false"></div>
-      
+        <div kendo-window="wBrochureStages" k-title="'Brochure Stages'"
+             k-width="600" k-height="200" k-visible="false"
+             k-content="{ url: '../content/web/loremIpsum.html' }">
+        </div>
+        <div kendo-window="wBrochureImages" k-title="'Brochure Images'"
+             k-width="400" k-height="300" k-visible="true"
+             k-content="{ url: './images.html' }">
+        </div>
+        <div kendo-window="wBrochureChart" k-title="'Brochure Chart'"
+             k-width="600" k-height="200" k-visible="false"
+             k-content="{ url: '../content/web/loremIpsum.html' }">
+        </div>
+        <div kendo-window="wBrochureNotes" k-title="'Notes'"
+             k-width="600" k-height="200" k-visible="false"
+             k-content="{ url: '../content/web/loremIpsum.html' }">
+        </div>
     </div>
-    <style>
-        .example {
-            min-height: 400px;
-        }
-    </style>
-</div>
 
 <script>
-  angular.module("KendoDemos", [ "kendo.directives" ])
-      .controller("MyCtrl", function($scope){
+
+
+
+  var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
+      .controller("MyCtrl", function($scope,$http){
+
+          kendo.spreadsheet.registerEditor("color", function(){
+                var context, dlg, model;
+
+                // Further delay the initialization of the UI until the `edit` method is
+                // actually called, so here just return the object with the required API.
+
+                return {
+                    edit: function(options) {
+                        context = options;
+                        open();
+                    },
+                    icon: "k-i-expand k-i-background"
+                };
+
+                // This function actually creates the UI if not already there, and
+                // caches the dialog and the model.
+                function create() {
+                    if (!dlg) {
+                        model = kendo.observable({
+                            value: "#000000",
+                            ok: function() {
+                                // This is the result when OK is clicked. Invoke the
+                                // callback with the value.
+                                context.callback(model.value);
+                                dlg.close();
+                            },
+                            cancel: function() {
+                                dlg.close();
+                            }
+                        });
+                        var el = $("<div data-visible='true' data-role='window' data-modal='true' data-resizable='false' data-title='Select color'>" +
+                                   "  <div data-role='flatcolorpicker' data-bind='value: value'></div>" +
+                                   "  <div style='margin-top: 1em; text-align: right'>" +
+                                   "    <button style='width: 5em' class='k-button' data-bind='click: ok'>OK</button>" +
+                                   "    <button style='width: 5em' class='k-button' data-bind='click: cancel'>Cancel</button>" +
+                                   "  </div>" +
+                                   "</div>");
+                        kendo.bind(el, model);
+
+                        // Cache the dialog.
+                        dlg = el.getKendoWindow();
+                    }
+                }
+
+                function open() {
+                    create();
+                    dlg.open();
+                    dlg.center();
+
+                    // If the selected cell already contains some value, reflect
+                    // it in the custom editor.
+                    var value = context.range.value();
+                    if (value != null) {
+                        model.set("value", value);
+                    }
+                }
+          });
+
+          $scope.selectionPrevRow=-1;
+          $scope.selectionPrevCol=-1;
+
+          $scope.spreadSheetPanelOpen = false;
+          $scope.keyPress =function(e) {
+
+
+                 debugger;
+
+                 $scope.selectionPrevRow=$scope.selectionRow;
+                 $scope.selectionPrevCol=$scope.selectionCol;
+
+                 console.log('Old values:'+$scope.selectionPrevRow+'-'+$scope.selectionCol);
+
+                 $scope.activeCell = $scope.sheet.activeCell();
+                 $scope.selectionRow=$scope.activeCell.topLeft.row;
+                 $scope.selectionCol=$scope.activeCell.topLeft.col;
+                 if ($scope.selectionRow>28) {
+                    $scope.spreadNumber = 2;
+                 } else {
+                    $scope.spreadNumber = Math.floor(($scope.selectionRow+1)/2)*2;
+                 }
+
+                 debugger;
+                 console.log('New values:'+$scope.selectionRow+'-'+$scope.selectionCol);
+
+
+                 if ($scope.selectionPrevRow!=$scope.selectionRow || $scope.selectionPrevCol!=$scope.selectionCol) {
+
+                     var valueSheet = $scope.lookup_spreadsheet.activeSheet();
+
+                     if ($scope.selectionCol==12) {
+                        valueSheet.range("A1:A1000").clear();
+
+                        $scope.lookup_splitter.expand(".k-pane:last");
+                        $scope.spreadSheetPanelOpen = true;
+
+                        valueSheet.frozenRows(1);
+                        valueSheet.frozenColumns(1);
+
+                        valueSheet.range("A1").background("#ff4251");
+                        valueSheet.range("A1").color("white");
+                        valueSheet.range("A1").bold(true);
+                        valueSheet.columnWidth(0, 200);
+                        valueSheet.range("A1").value('Values');
+
+                        valueSheet.range("A2").value('REGULAR PRICE');
+                        valueSheet.range("A3").value('STRAIGHT DISCOUNTING');
+                        valueSheet.range("A4").value('GWP/PWP/ORDER BUILDERS');
+                        valueSheet.range("A5").value('STRAIGHT DISCOUNTING');
+                        valueSheet.range("A6").value('COMBINATION OFFERS');
+
+                        debugger;
+
+                        console.log("--->"+$scope.activeCell.topLeft);
+
+                        debugger;
+                        console.log("--->"+$scope.sheet.range($scope.activeCell.topLeft).values());
+
+                        for (var e=2;e<7;e++) {
+                            var x = $scope.sheet.range($scope.activeCell.topLeft).values()[0][0];
+                            var y = valueSheet.range("A"+e).values()[0][0];
+                            console.log("-------->"+x+"-"+y);
+                            debugger;
+                            if (x==y) {
+                                debugger;
+                                valueSheet.range("A"+e).select();
+                                console.log("A"+e+"--->*"+valueSheet.activeCell().topLeft);
+                                $scope.sheet.range($scope.activeCell.topLeft).select();
+
+
+
+                                //$scope.sheet.recalc();
+                                debugger;
+                                $scope.lookup_splitter.collapse(".k-pane:last");
+                                $scope.lookup_splitter.expand(".k-pane:last");
+                                break;
+                            }
+                        }
+
+
+
+
+                     } else {
+                     /*
+                        debugger;
+                        if ($scope.spreadSheetPanelOpen) {
+                            debugger;
+                            $scope.spreadSheetPanelOpen=false;
+                            //$scope.sheet.range($scope.activeCell.topLeft).select();
+                        }
+                     */
+                        $scope.lookup_splitter.collapse(".k-pane:last");
+
+
+
+
+
+                     }
+
+  	             }
+
+  	             if ($scope.selectionCol==12) {
+  	                var xxx = $("#subsheet").find(".k-spreadsheet").data("kendoSpreadsheet");
+  	             }
+
+
+            }
+
           $scope.hello = "Hello from Controller!";
-      })
+
+          $scope.sheets= [{ name: "Core Brochure" }];
+
+
+          $scope.excelDataRecords = new kendo.data.ObservableArray([]);
+
+          $scope.excelDataSource = new kendo.data.DataSource({
+	        data: $scope.excelDataRecords,
+			batch: true,
+            schema: {
+                model: {
+                fields: {
+                    PAGE_NUMBER: {type: 'number'},
+                    PRFL_CD: {type: 'number'},
+                    PRFL_NM: {type: 'string'},
+                    OFFR_DESC_TXT: {type: 'string'},
+                    CATGRY_NM: {type: 'string'},
+                    BRND_NM: {type: 'string'},
+                    FORM_GRP_DESC_TXT: {type: 'string'},
+                    FORM_DESC_TXT: {type: 'string'},
+                    SGMT_NM: {type: 'string'},
+                    GENDR_DESC_TXT: {type: 'string'},
+                    PRICING_GROUP: {type: 'string'},
+                    SLS_CLS_DESC_TXT: {type: 'string'},
+                    PROMTN_DESC_TXT: {type: 'string'},
+                    SLS_PRC_AMT: {type: 'number'},
+                    PG_WGHT_PCT: {type: 'number'},
+                    PG_TYP_DESC_TXT: {type: 'string'},
+                    MICR_NCPSLTN_IND: {type: 'string'},
+                    SKU_COUNT: {type: 'number'},
+                    REG_PRC_AMT: {type: 'number'}
+                }
+            }
+          }});
+
+          $scope.$on("kendoRendered", function (event) {
+
+            debugger;
+
+            console.log($scope.lookup_splitter);
+
+            $scope.lookup_splitter.collapse(".k-pane:last");
+
+            console.log($scope.wBrochureMain);
+            $scope.wBrochureMain.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureMain.setOptions({position: { top: "1px" , left: "1px" }});
+            $scope.wBrochureMain.wrapper.find(".k-i-custom").click(function (e) {
+                debugger;
+                $scope.zIndexwBrochureMain = $scope.wBrochureMain.wrapper[0].style.zIndex;
+                alert($scope.wBrochureMain.wrapper[0].style.zIndex);
+                alert("wBrochureMain - Custom action button clicked");
+                e.preventDefault();
+            });
+            //$scope.wBrochureMain.minimize();
+            console.log($scope.wBrochureImages);
+            $scope.wBrochureImages.setOptions({ actions: ["Pin","Expand","Collapse","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
+            $scope.wBrochureImages.wrapper.find(".k-i-custom").click(function (e) {
+                debugger;
+                $scope.zIndexwBrochureImages = $scope.wBrochureImages.wrapper[0].style.zIndex;
+                alert($scope.wBrochureImages.wrapper[0].style.zIndex);
+                e.preventDefault();
+            });
+            $scope.wBrochureImages.wrapper.find(".k-i-expand").click(function (e) {
+                e.preventDefault();
+            });
+            $scope.wBrochureImages.wrapper.find(".k-i-collapse").click(function (e) {
+                e.preventDefault();
+            });
+            //$scope.wBrochureImages.minimize();
+
+            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10010] ];
+
+            ////////////////////////
+
+            console.log($scope.wBrochureHistory);
+            $scope.wBrochureHistory.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureHistory.setOptions({position: { top: "35px",left: "5px" }});
+            $scope.wBrochureHistory.wrapper.find(".k-i-custom").click(function (e) {
+                alert("wBrochureHistory - Custom action button clicked");
+                e.preventDefault();
+            });
+            $scope.wBrochureHistory.minimize();
+
+
+            console.log($scope.wBrochureStages);
+            $scope.wBrochureStages.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureStages.setOptions({position: { top: "55px" ,left: "5px" }});
+            $scope.wBrochureStages.wrapper.find(".k-i-custom").click(function (e) {
+                alert("wBrochureStages - Custom action button clicked");
+                e.preventDefault();
+            });
+            $scope.wBrochureStages.minimize();
+
+
+
+
+            console.log($scope.wBrochureChart);
+            $scope.wBrochureChart.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureChart.setOptions({position: { top: "95px",left: "5px" }});
+            $scope.wBrochureChart.wrapper.find(".k-i-custom").click(function (e) {
+                alert("wBrochureChart - Custom action button clicked");
+                e.preventDefault();
+            });
+            $scope.wBrochureChart.minimize();
+
+            console.log($scope.wBrochureNotes);
+            $scope.wBrochureNotes.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureNotes.setOptions({position: { top: "115px",left: "5px" }});
+            $scope.wBrochureNotes.wrapper.find(".k-i-custom").click(function (e) {
+                alert("wBrochureNotes - Custom action button clicked");
+                e.preventDefault();
+            });
+            $scope.wBrochureNotes.minimize();
+
+            $scope.spreadsheet.bind("change", function(e) {
+                console.log("Spreadsheet change, new value: " + e.range.value());
+
+            });
+
+            console.log($scope.spreadsheet);
+
+            $scope.wBrochureMain.bind("maximize", function(e) {
+
+                /*
+                console.log(e);
+                debugger;
+                console.log(e.sender.wrapper[0]);
+                console.log(e.sender.wrapper[0].style);
+                console.log(e.sender.wrapper[0].style.height);
+                debugger;
+                $('.k-spreadsheet').css('height', e.sender.wrapper[0].style.height);//55
+                $('.k-spreadsheet').css('width',  e.sender.wrapper[0].style.width);//20
+                */
+
+            });
+
+            $scope.wBrochureMain.bind("resize", function(e) {
+
+                /*
+                debugger;
+                console.log(e);
+                $('.k-spreadsheet').css('height', e.height+55);
+                $('.k-spreadsheet').css('width', e.width-20);
+                */
+
+            });
+
+
+
+
+            $http.get('../grid/actual_campaigns_data.json')
+            .then(function success(response) {
+
+
+						var cs = '';
+					    var d = response.data;
+						var xxx = JSON.stringify(d);
+						xxx = xxx.substring(1, xxx.length-1);
+						var codeS = '$scope.excelDataRecords.unshift('+xxx+');';
+						eval(codeS);
+
+						//alert($scope.excelDataRecords.length);
+
+						debugger;
+
+						$scope.spreadsheet.activeSheet().setDataSource($scope.excelDataSource, [
+                                {field: "PAGE_NUMBER", title: "Spread"},
+                                {field: "PRFL_CD", title: "Profile Code"},
+                                {field: "PRFL_NM", title: "Profile Name"},
+                                {field: "OFFR_DESC_TXT", title: "Offer Description"},
+                                {field: "CATGRY_NM", title: "Category"},
+                                {field: "BRND_NM", title: "Brand"},
+                                {field: "FORM_GRP_DESC_TXT", title: "Form Group"},
+                                {field: "FORM_DESC_TXT", title: "Form"},
+                                {field: "SGMT_NM", title: "Segment"},
+                                {field: "GENDR_DESC_TXT", title: "Gender"},
+                                {field: "PRICING_GROUP", title: "Pricing Group"},
+                                {field: "SLS_CLS_DESC_TXT", title: "Sales Class"},
+                                {field: "PROMTN_DESC_TXT", title: "Promotion"},
+                                {field: "SLS_PRC_AMT", title: "Avg Selling Price"},
+                                {field: "PG_WGHT_PCT", title: "Page Weight %"},
+                                {field: "PG_TYP_DESC_TXT", title: "Page Type"},
+                                {field: "MICR_NCPSLTN_IND", title: "Micro"},
+                                {field: "SKU_COUNT", title: "Sku Count"},
+                                {field: "REG_PRC_AMT", title: "Regular Price"}
+                        ]);
+                        debugger;
+
+                        $scope.sheet = $scope.spreadsheet.activeSheet();
+
+
+                        $scope.sheet.frozenRows(1);
+                        $scope.sheet.frozenColumns(4);
+
+                        $scope.sheet.range("A1:S1").background("#ff4251");
+                        $scope.sheet.range("A1:S1").color("white");
+                        $scope.sheet.range("A1:S1").bold(true);
+
+                        $scope.sheet.range("A2:B"+($scope.excelDataRecords.length+1)).background("#3e9ed6");
+                        $scope.sheet.range("A2:B"+($scope.excelDataRecords.length+1)).color("white");
+
+
+                        $scope.myFilter = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: $scope.excelDataRecords.length+1 });
+
+                        $scope.sheet.range("A1:S"+($scope.excelDataRecords.length+1)).filter([ { column: 0, filter: $scope.myFilter } ]);
+
+                        debugger;
+
+                        $scope.sheet.range("A2:A2000").editor("color");
+
+                        var x = $scope.sheet.range("A1");
+
+                        debugger;
+
+                        console.log(x);
+
+                        $scope.sheet.columnWidth(0, 80);
+                        $scope.sheet.columnWidth(1, 100);
+                        $scope.sheet.columnWidth(2, 250);
+                        $scope.sheet.columnWidth(3, 250);
+                        $scope.sheet.columnWidth(4, 200);
+                        $scope.sheet.columnWidth(5, 200);
+                        $scope.sheet.columnWidth(6, 200);
+                        $scope.sheet.columnWidth(7, 200);
+                        $scope.sheet.columnWidth(8, 200);
+                        $scope.sheet.columnWidth(9, 100);
+                        $scope.sheet.columnWidth(10, 200);
+                        $scope.sheet.columnWidth(11, 200);
+                        $scope.sheet.columnWidth(12, 200);
+
+                        $scope.sheet.columnWidth(13, 150);
+                        $scope.sheet.columnWidth(14, 150);
+                        $scope.sheet.columnWidth(15, 150);
+                        $scope.sheet.columnWidth(16, 150);
+                        $scope.sheet.columnWidth(17, 150);
+                        $scope.sheet.columnWidth(18, 150);
+
+                        $scope.sheet.range("D1:D"+($scope.excelDataRecords.length+1)).borderRight({ size: 5, color: "#3e9ed6" });
+
+                        //$scope.sheet.range("C1:I"+($scope.excelDataRecords.length+1)).wrap(true);
+
+                        $scope.sheet.range("K1:Q1").background("#e83c75");
+                        $scope.sheet.range("K1:Q"+($scope.excelDataRecords.length+1)).borderRight({ size: 2, color: "#e83c75" });
+                        $scope.sheet.range("K1:Q"+($scope.excelDataRecords.length+1)).borderLeft({ size: 2, color: "#e83c75" });
+
+                        //$scope.sheet.range("A2:J1250").enable(false);
+                        //$scope.sheet.range("R2:S1250").enable(false);
+
+                        console.log($scope.spreadsheet.activeSheet());
+                        debugger;
+
+
+
+                        var el = $(".k-window");
+
+                        // hook up the watcher
+                        el.watch({
+                            // specify CSS styles or attribute names to monitor
+                            properties: "zIndex",
+
+                            // callback function when a change is detected
+                            callback: function(data, i) {
+
+
+                                var propChanged = data.props[i];
+                                var newValue = data.vals[i];
+
+                                var el = this;
+                                var el$ = $(this);
+
+                                console.log('el->'+el);
+                                console.log('el->'+el.innerHTML);
+
+
+                                for (var hh=0; hh<$scope.windowsZIndex.length; hh++ ){
+                                    if (el.innerHTML.indexOf($scope.windowsZIndex[hh][0])>-1) {
+                                        el.style.zIndex = $scope.windowsZIndex[hh][1];
+                                    }
+                                }
+
+                                console.log(el.style.zIndex);
+
+                                // do what you need based on changes
+                                // or do your own checks
+                            }
+                        });
+
+
+
+			}, function error(response) {
+                debugger;
+                alert('something went wrong')
+                console.log(response);
+            });
+
+
+
+          });
+
+
+
+
+
+      });
+
+    myAppModule.directive('resize', function ($window) {
+    return function ($scope, element) {
+        var w = angular.element($window);
+        $scope.getWindowDimensions = function () {
+            return {
+                'h': w.height(),
+                'w': w.width()
+            };
+        };
+
+        //$scope.editor = EditorObject;
+
+        $scope.$watch($scope.getWindowDimensions, function (newValue, oldValue) {
+
+            //debugger;
+            /*
+            if ($scope.editor.get()!=null) {
+
+                var h = $scope.editor.get().display.lastWrapHeight;
+                var w = $scope.editor.get().display.lastWrapWidth;
+
+                var hh = window.innerHeight-110;
+                var ww = window.innerWidth-5;
+
+                $scope.editor.get().setSize(ww,hh);
+
+            }
+            */
+
+            $scope.windowHeight = newValue.h;
+            $scope.windowWidth = newValue.w;
+
+        }, true);
+
+        w.bind('resize', function () {
+            $scope.$apply();
+        });
+    }
+});
+
 </script>
 
 
-    
+
 </body>
 </html>
