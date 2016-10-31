@@ -195,10 +195,12 @@
                             debugger;
                             if (x==y) {
                                 debugger;
-                                valueSheet.range("A"+e).select();
+                                //valueSheet.range("A"+e).select();
                                 console.log("A"+e+"--->*"+valueSheet.activeCell().topLeft);
-                                $scope.sheet.range($scope.activeCell.topLeft).select();
-
+                                //$scope.sheet.range($scope.activeCell.topLeft).select();
+                                valueSheet.range("A"+e).background("#3e9ed6");
+                                valueSheet.range("A"+e).color("white");
+                                valueSheet.range("A"+e).bold(true);
 
 
                                 //$scope.sheet.recalc();
@@ -219,6 +221,7 @@
                             debugger;
                             $scope.spreadSheetPanelOpen=false;
                             //$scope.sheet.range($scope.activeCell.topLeft).select();
+
                         }
                      */
                         $scope.lookup_splitter.collapse(".k-pane:last");
