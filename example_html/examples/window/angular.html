@@ -192,10 +192,12 @@
 
 
                      if ($scope.selectionCol==13) {
+                        /*
                         if ($scope.sheet2!=null) {
                             debugger;
                             $scope.sheet2.range("A1:A1000").clear();
                         }
+                        */
 
                         $scope.lookup_splitter.expand(".k-pane:last");
                         $scope.spreadSheetPanelOpen = true;
@@ -205,20 +207,16 @@
                         $scope.sheet2.range("A1").bold(true);
                         $scope.sheet2.columnWidth(0, 300);
                         $scope.sheet2.range("A1").value('Values');
-
+                        /*
                         $scope.sheet2.range("A2").value('REGULAR PRICE');
                         $scope.sheet2.range("A3").value('STRAIGHT DISCOUNTING');
                         $scope.sheet2.range("A4").value('GWP/PWP/ORDER BUILDERS');
                         $scope.sheet2.range("A5").value('STRAIGHT DISCOUNTING');
                         $scope.sheet2.range("A6").value('COMBINATION OFFERS');
-
+                        */
                         $scope.sheet2.frozenRows(1);
                         $scope.sheet2.frozenColumns(1);
 
-                        $scope.zzz = 6
-
-                        $scope.myFilter2 = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: $scope.zzz });
-                        $scope.sheet2.range("A1:A6").filter([ { column: 0, filter: $scope.myFilter2 } ]);
 
                         debugger;
 
@@ -316,7 +314,19 @@
           $scope.sheets= [{ name: "Core Brochure" }];
           $scope.sheets2= [{ name: "Values" }];
 
+          $scope.value1DataRecords = new kendo.data.ObservableArray([]);
 
+          $scope.value1DataSource = new kendo.data.DataSource({
+	        data: $scope.value1DataRecords,
+			batch: true,
+            schema: {
+                model: {
+                fields: {
+                    ID: {type: 'number'},
+                    VALUE: {type: 'string'}
+                }
+            }
+          }});
 
           $scope.excelDataRecords = new kendo.data.ObservableArray([]);
 
@@ -477,7 +487,31 @@
             });
 
 
+            $http.get('../grid/values1.json').then(function success(response) {
 
+                var cs = '';
+			    var d = response.data;
+				var xxx = JSON.stringify(d);
+				xxx = xxx.substring(1, xxx.length-1);
+				var codeS = '$scope.value1DataRecords.unshift('+xxx+');';
+				eval(codeS);
+
+                $scope.lookup_spreadsheet.activeSheet().setDataSource($scope.value1DataSource, [
+                                {field: "VALUE", title: "Value"}
+                        ]);
+
+                $scope.zzz = 6
+                $scope.sheet2 = $scope.lookup_spreadsheet.activeSheet();
+
+                $scope.myFilter2 = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: $scope.zzz });
+                $scope.sheet2.range("A1:A6").filter([ { column: 0, filter: $scope.myFilter2 } ]);
+
+
+            }, function error(response) {
+                debugger;
+                alert('something went wrong')
+                console.log(response);
+            });
 
             $http.get('../grid/actual_campaigns_data.json')
             .then(function success(response) {
@@ -520,7 +554,6 @@
 
                         $scope.sheet = $scope.spreadsheet.activeSheet();
 
-                        $scope.sheet2 = $scope.lookup_spreadsheet.activeSheet();
 
                         $scope.sheet.frozenRows(1);
                         $scope.sheet.frozenColumns(5);
