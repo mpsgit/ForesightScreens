@@ -146,6 +146,11 @@
 
                  console.log($scope.wBrochureImages);
 
+                 $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
+                 $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
+                 $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
+
+
                  if (!$scope.wBrochureImagesVisible) {
                     $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
                     $scope.wBrochureImages.restore();
@@ -154,6 +159,11 @@
                     $scope.wBrochureImagesVisible=true;
                     debugger;
                  }
+
+                 $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
+                 $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
+                 $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
+
 
                  $scope.selectionPrevRow=$scope.selectionRow;
                  $scope.selectionPrevCol=$scope.selectionCol;
@@ -389,7 +399,7 @@
             });
             $scope.wBrochureImages.minimize();
 
-            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10010] ];
+            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10050],['wBrochureProducts',10055] ];
 
             ////////////////////////
 
