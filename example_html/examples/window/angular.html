@@ -54,6 +54,10 @@
              k-width="400" k-height="300" k-visible="true"
              k-content="{ url: './images.html' }">
         </div>
+        <div kendo-window="wBrochureProducts" k-title="'Product Images'"
+             k-width="200" k-height="300" k-visible="true"
+             k-content="{ url: './product.html' }">
+        </div>
         <div kendo-window="wBrochureChart" k-title="'Brochure Chart'"
              k-width="600" k-height="200" k-visible="false"
              k-content="{ url: '../content/web/loremIpsum.html' }">
@@ -145,6 +149,8 @@
                  if (!$scope.wBrochureImagesVisible) {
                     $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
                     $scope.wBrochureImages.restore();
+                    $scope.wBrochureProducts.setOptions({position: { top: "420px",left: "405px" }});
+                    $scope.wBrochureProducts.restore();
                     $scope.wBrochureImagesVisible=true;
                     debugger;
                  }
@@ -163,41 +169,46 @@
                     $scope.spreadNumber = Math.floor(($scope.selectionRow+1)/2)*2;
                  }
 
+                 $scope.productNumber = Math.round(Math.random()*3);
+                 if ($scope.productNumber==0) $scope.productNumber=1;
+
                  debugger;
                  console.log('New values:'+$scope.selectionRow+'-'+$scope.selectionCol);
 
 
+                 debugger;
+
                  if ($scope.selectionPrevRow!=$scope.selectionRow || $scope.selectionPrevCol!=$scope.selectionCol) {
 
-                     var valueSheet = $scope.lookup_spreadsheet.activeSheet();
 
                      if ($scope.selectionCol==13) {
-                        valueSheet.range("A1:A1000").clear();
+                        if ($scope.sheet2!=null) {
+                            debugger;
+                            $scope.sheet2.range("A1:A1000").clear();
+                        }
 
                         $scope.lookup_splitter.expand(".k-pane:last");
                         $scope.spreadSheetPanelOpen = true;
 
-                        valueSheet.frozenRows(1);
-                        valueSheet.frozenColumns(1);
+                        $scope.sheet2.range("A1").background("#ff4251");
+                        $scope.sheet2.range("A1").color("white");
+                        $scope.sheet2.range("A1").bold(true);
+                        $scope.sheet2.columnWidth(0, 300);
+                        $scope.sheet2.range("A1").value('Values');
 
-                        valueSheet.range("A1").background("#ff4251");
-                        valueSheet.range("A1").color("white");
-                        valueSheet.range("A1").bold(true);
-                        valueSheet.columnWidth(0, 300);
-                        valueSheet.range("A1").value('Values');
+                        $scope.sheet2.range("A2").value('REGULAR PRICE');
+                        $scope.sheet2.range("A3").value('STRAIGHT DISCOUNTING');
+                        $scope.sheet2.range("A4").value('GWP/PWP/ORDER BUILDERS');
+                        $scope.sheet2.range("A5").value('STRAIGHT DISCOUNTING');
+                        $scope.sheet2.range("A6").value('COMBINATION OFFERS');
 
-                        valueSheet.range("A2").value('REGULAR PRICE');
-                        valueSheet.range("A3").value('STRAIGHT DISCOUNTING');
-                        valueSheet.range("A4").value('GWP/PWP/ORDER BUILDERS');
-                        valueSheet.range("A5").value('STRAIGHT DISCOUNTING');
-                        valueSheet.range("A6").value('COMBINATION OFFERS');
+                        $scope.sheet2.frozenRows(1);
+                        $scope.sheet2.frozenColumns(1);
 
-                        $scope.myFilter2 = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: 6 });
+                        $scope.zzz = 6
 
-                        debugger;
-
-                        valueSheet.range("A2:A6").filter([ { column: 0, filter: $scope.myFilter2 } ]);
-
+                        $scope.myFilter2 = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: $scope.zzz });
+                        $scope.sheet2.range("A1:A6").filter([ { column: 0, filter: $scope.myFilter2 } ]);
 
                         debugger;
 
@@ -208,26 +219,26 @@
 
                         for (var e=2;e<7;e++) {
                             var x = $scope.sheet.range($scope.activeCell.topLeft).values()[0][0];
-                            var y = valueSheet.range("A"+e).values()[0][0];
+                            var y = $scope.sheet2.range("A"+e).values()[0][0];
                             console.log("-------->"+x+"-"+y);
                             debugger;
                             if (x==y) {
                                 debugger;
-                                //valueSheet.range("A"+e).select();
-                                console.log("A"+e+"--->*"+valueSheet.activeCell().topLeft);
+                                //$scope.sheet2.range("A"+e).select();
+                                console.log("A"+e+"--->*"+$scope.sheet2.activeCell().topLeft);
                                 //$scope.sheet.range($scope.activeCell.topLeft).select();
-                                valueSheet.range("A"+e).background("#3e9ed6");
-                                valueSheet.range("A"+e).color("white");
-                                valueSheet.range("A"+e).bold(true);
+                                $scope.sheet2.range("A"+e).background("#3e9ed6");
+                                $scope.sheet2.range("A"+e).color("white");
+                                $scope.sheet2.range("A"+e).bold(true);
 
                                 if (e>3) {
-                                    valueSheet.range("A3").background("#92d3e4");
-                                    valueSheet.range("A3").color("white");
-                                    valueSheet.range("A3").bold(true);
+                                    $scope.sheet2.range("A3").background("#92d3e4");
+                                    $scope.sheet2.range("A3").color("white");
+                                    $scope.sheet2.range("A3").bold(true);
                                 } else {
-                                    valueSheet.range("A4").background("#92d3e4");
-                                    valueSheet.range("A4").color("white");
-                                    valueSheet.range("A4").bold(true);
+                                    $scope.sheet2.range("A4").background("#92d3e4");
+                                    $scope.sheet2.range("A4").color("white");
+                                    $scope.sheet2.range("A4").bold(true);
                                 }
 
 
@@ -276,12 +287,11 @@
                  $scope.selectionRow=$scope.activeCell.topLeft.row;
                  $scope.selectionCol=$scope.activeCell.topLeft.col;
 
-                 var valueSheet = $scope.lookup_spreadsheet.activeSheet();
-                 var valueCell = valueSheet.activeCell();
+                 var valueCell = $scope.sheet2.activeCell();
                  var valueRow = valueCell.topLeft.row;
                  var valueCol = valueCell.topLeft.col;
 
-  	             $scope.sheet.range($scope.activeCell.topLeft).value(valueSheet.range(valueCell.topLeft).values()[0][0]);
+  	             $scope.sheet.range($scope.activeCell.topLeft).value($scope.sheet2.range(valueCell.topLeft).values()[0][0]);
 
                  var myrow = 1+ $scope.activeCell.topLeft.row;
                  console.log(myrow);
@@ -294,6 +304,8 @@
           $scope.hello = "Hello from Controller!";
 
           $scope.sheets= [{ name: "Core Brochure" }];
+          $scope.sheets2= [{ name: "Values" }];
+
 
 
           $scope.excelDataRecords = new kendo.data.ObservableArray([]);
@@ -332,6 +344,8 @@
 
             debugger;
 
+
+
             console.log($scope.lookup_splitter);
 
             $scope.lookup_splitter.collapse(".k-pane:last");
@@ -341,13 +355,24 @@
             $scope.wBrochureMain.setOptions({position: { top: "1px" , left: "1px" }});
             $scope.wBrochureMain.wrapper.find(".k-i-custom").click(function (e) {
                 debugger;
-                $scope.zIndexwBrochureMain = $scope.wBrochureMain.wrapper[0].style.zIndex;
-                alert($scope.wBrochureMain.wrapper[0].style.zIndex);
-                alert("wBrochureMain - Custom action button clicked");
+
+                console.log($scope.spreadsheet);
+
+                debugger;
+
+                $scope.spreadsheet.saveAsExcel();
+
+                debugger;
+
                 e.preventDefault();
             });
             $scope.wBrochureMain.maximize();
             console.log($scope.wBrochureImages);
+
+            $scope.wBrochureProducts.setOptions({ actions: ["Minimize", "Maximize"] });
+            $scope.wBrochureProducts.setOptions({position: { top: "710px",left: "405px" }});
+            $scope.wBrochureProducts.minimize();
+
             $scope.wBrochureImages.setOptions({ actions: ["Pin","Expand","Collapse","Custom", "Minimize", "Maximize"] });
             $scope.wBrochureImages.setOptions({position: { top: "710px",left: "1px" }});
             $scope.wBrochureImages.wrapper.find(".k-i-custom").click(function (e) {
@@ -485,6 +510,7 @@
 
                         $scope.sheet = $scope.spreadsheet.activeSheet();
 
+                        $scope.sheet2 = $scope.lookup_spreadsheet.activeSheet();
 
                         $scope.sheet.frozenRows(1);
                         $scope.sheet.frozenColumns(5);
