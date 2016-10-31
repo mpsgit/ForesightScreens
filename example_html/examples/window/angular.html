@@ -132,11 +132,22 @@
           $scope.selectionPrevRow=-1;
           $scope.selectionPrevCol=-1;
 
+          $scope.wBrochureImagesVisible=false;
+
           $scope.spreadSheetPanelOpen = false;
           $scope.keyPress =function(e) {
 
 
                  debugger;
+
+                 console.log($scope.wBrochureImages);
+
+                 if (!$scope.wBrochureImagesVisible) {
+                    $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
+                    $scope.wBrochureImages.restore();
+                    $scope.wBrochureImagesVisible=true;
+                    debugger;
+                 }
 
                  $scope.selectionPrevRow=$scope.selectionRow;
                  $scope.selectionPrevCol=$scope.selectionCol;
@@ -160,7 +171,7 @@
 
                      var valueSheet = $scope.lookup_spreadsheet.activeSheet();
 
-                     if ($scope.selectionCol==12) {
+                     if ($scope.selectionCol==13) {
                         valueSheet.range("A1:A1000").clear();
 
                         $scope.lookup_splitter.expand(".k-pane:last");
@@ -172,7 +183,7 @@
                         valueSheet.range("A1").background("#ff4251");
                         valueSheet.range("A1").color("white");
                         valueSheet.range("A1").bold(true);
-                        valueSheet.columnWidth(0, 200);
+                        valueSheet.columnWidth(0, 300);
                         valueSheet.range("A1").value('Values');
 
                         valueSheet.range("A2").value('REGULAR PRICE');
@@ -180,6 +191,13 @@
                         valueSheet.range("A4").value('GWP/PWP/ORDER BUILDERS');
                         valueSheet.range("A5").value('STRAIGHT DISCOUNTING');
                         valueSheet.range("A6").value('COMBINATION OFFERS');
+
+                        $scope.myFilter2 = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: 6 });
+
+                        debugger;
+
+                        valueSheet.range("A2:A6").filter([ { column: 0, filter: $scope.myFilter2 } ]);
+
 
                         debugger;
 
@@ -265,6 +283,11 @@
 
   	             $scope.sheet.range($scope.activeCell.topLeft).value(valueSheet.range(valueCell.topLeft).values()[0][0]);
 
+                 var myrow = 1+ $scope.activeCell.topLeft.row;
+                 console.log(myrow);
+                 $scope.sheet.range("A"+myrow).background("#f4eb42");
+                 $scope.sheet.range("A"+myrow).value("C");
+
                  debugger;
           }
 
@@ -281,6 +304,7 @@
             schema: {
                 model: {
                 fields: {
+                    SELECTED: {type: 'string'},
                     PAGE_NUMBER: {type: 'number'},
                     PRFL_CD: {type: 'number'},
                     PRFL_NM: {type: 'string'},
@@ -322,10 +346,10 @@
                 alert("wBrochureMain - Custom action button clicked");
                 e.preventDefault();
             });
-            //$scope.wBrochureMain.minimize();
+            $scope.wBrochureMain.maximize();
             console.log($scope.wBrochureImages);
             $scope.wBrochureImages.setOptions({ actions: ["Pin","Expand","Collapse","Custom", "Minimize", "Maximize"] });
-            $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
+            $scope.wBrochureImages.setOptions({position: { top: "710px",left: "1px" }});
             $scope.wBrochureImages.wrapper.find(".k-i-custom").click(function (e) {
                 debugger;
                 $scope.zIndexwBrochureImages = $scope.wBrochureImages.wrapper[0].style.zIndex;
@@ -338,7 +362,7 @@
             $scope.wBrochureImages.wrapper.find(".k-i-collapse").click(function (e) {
                 e.preventDefault();
             });
-            //$scope.wBrochureImages.minimize();
+            $scope.wBrochureImages.minimize();
 
             $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10010] ];
 
@@ -436,6 +460,7 @@
 						debugger;
 
 						$scope.spreadsheet.activeSheet().setDataSource($scope.excelDataSource, [
+                                {field: "SELECTED", title: " "},
                                 {field: "PAGE_NUMBER", title: "Spread"},
                                 {field: "PRFL_CD", title: "Profile Code"},
                                 {field: "PRFL_NM", title: "Profile Name"},
@@ -462,14 +487,14 @@
 
 
                         $scope.sheet.frozenRows(1);
-                        $scope.sheet.frozenColumns(4);
+                        $scope.sheet.frozenColumns(5);
 
-                        $scope.sheet.range("A1:S1").background("#ff4251");
-                        $scope.sheet.range("A1:S1").color("white");
-                        $scope.sheet.range("A1:S1").bold(true);
+                        $scope.sheet.range("A1:T1").background("#ff4251");
+                        $scope.sheet.range("A1:T1").color("white");
+                        $scope.sheet.range("A1:T1").bold(true);
 
-                        $scope.sheet.range("A2:B"+($scope.excelDataRecords.length+1)).background("#3e9ed6");
-                        $scope.sheet.range("A2:B"+($scope.excelDataRecords.length+1)).color("white");
+                        $scope.sheet.range("B2:B"+($scope.excelDataRecords.length+1)).background("#3e9ed6");
+                        $scope.sheet.range("B2:B"+($scope.excelDataRecords.length+1)).color("white");
 
 
                         $scope.myFilter = new kendo.spreadsheet.TopFilter({ type: "topNumber", value: $scope.excelDataRecords.length+1 });
@@ -478,42 +503,43 @@
 
                         debugger;
 
-                        $scope.sheet.range("A2:A2000").editor("color");
+                        //$scope.sheet.range("B2:B2000").editor("color");
 
-                        var x = $scope.sheet.range("A1");
+                        var x = $scope.sheet.range("B1");
 
                         debugger;
 
                         console.log(x);
 
-                        $scope.sheet.columnWidth(0, 80);
-                        $scope.sheet.columnWidth(1, 100);
-                        $scope.sheet.columnWidth(2, 250);
+                        $scope.sheet.columnWidth(0, 20);
+                        $scope.sheet.columnWidth(1, 80);
+                        $scope.sheet.columnWidth(2, 100);
                         $scope.sheet.columnWidth(3, 250);
-                        $scope.sheet.columnWidth(4, 200);
+                        $scope.sheet.columnWidth(4, 250);
                         $scope.sheet.columnWidth(5, 200);
                         $scope.sheet.columnWidth(6, 200);
                         $scope.sheet.columnWidth(7, 200);
                         $scope.sheet.columnWidth(8, 200);
-                        $scope.sheet.columnWidth(9, 100);
-                        $scope.sheet.columnWidth(10, 200);
+                        $scope.sheet.columnWidth(9, 200);
+                        $scope.sheet.columnWidth(10, 100);
                         $scope.sheet.columnWidth(11, 200);
                         $scope.sheet.columnWidth(12, 200);
+                        $scope.sheet.columnWidth(13, 200);
 
-                        $scope.sheet.columnWidth(13, 150);
                         $scope.sheet.columnWidth(14, 150);
                         $scope.sheet.columnWidth(15, 150);
                         $scope.sheet.columnWidth(16, 150);
                         $scope.sheet.columnWidth(17, 150);
                         $scope.sheet.columnWidth(18, 150);
+                        $scope.sheet.columnWidth(19, 150);
 
-                        $scope.sheet.range("D1:D"+($scope.excelDataRecords.length+1)).borderRight({ size: 5, color: "#3e9ed6" });
+                        $scope.sheet.range("E1:E"+($scope.excelDataRecords.length+1)).borderRight({ size: 5, color: "#3e9ed6" });
 
                         //$scope.sheet.range("C1:I"+($scope.excelDataRecords.length+1)).wrap(true);
 
-                        $scope.sheet.range("K1:Q1").background("#e83c75");
-                        $scope.sheet.range("K1:Q"+($scope.excelDataRecords.length+1)).borderRight({ size: 2, color: "#e83c75" });
-                        $scope.sheet.range("K1:Q"+($scope.excelDataRecords.length+1)).borderLeft({ size: 2, color: "#e83c75" });
+                        $scope.sheet.range("L1:R1").background("#e83c75");
+                        $scope.sheet.range("L1:R"+($scope.excelDataRecords.length+1)).borderRight({ size: 2, color: "#e83c75" });
+                        $scope.sheet.range("L1:R"+($scope.excelDataRecords.length+1)).borderLeft({ size: 2, color: "#e83c75" });
 
                         //$scope.sheet.range("A2:J1250").enable(false);
                         //$scope.sheet.range("R2:S1250").enable(false);
