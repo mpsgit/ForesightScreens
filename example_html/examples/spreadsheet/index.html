@@ -10,6 +10,6 @@
         <kendo-spreadsheet ng-keyup="keyPress($event)" ng-click="keyPress($event)" k-scope-field="spreadsheet" k-toolbar="false" sheetsbar="false" k-sheets="sheets" style="width: 100%; height: 100%;"></kendo-spreadsheet>
     </div>
     <div id="subsheet">
-        <kendo-spreadsheet k-scope-field="lookup_spreadsheet" k-columns="1" k-rows='1000' k-toolbar="false" sheetsbar="false" k-sheets="sheets" style="width: 100%; height: 100%;"></kendo-spreadsheet>
+        <kendo-spreadsheet ng-keyup="keyPress2($event)" ng-click="keyPress2($event)" k-scope-field="lookup_spreadsheet" k-columns="1" k-rows='1000' k-toolbar="false" sheetsbar="false" k-sheets="sheets" style="width: 100%; height: 100%;"></kendo-spreadsheet>
     </div>
 </kendo-splitter>

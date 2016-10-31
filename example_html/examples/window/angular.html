@@ -202,6 +202,16 @@
                                 valueSheet.range("A"+e).color("white");
                                 valueSheet.range("A"+e).bold(true);
 
+                                if (e>3) {
+                                    valueSheet.range("A3").background("#92d3e4");
+                                    valueSheet.range("A3").color("white");
+                                    valueSheet.range("A3").bold(true);
+                                } else {
+                                    valueSheet.range("A4").background("#92d3e4");
+                                    valueSheet.range("A4").color("white");
+                                    valueSheet.range("A4").bold(true);
+                                }
+
 
                                 //$scope.sheet.recalc();
                                 debugger;
@@ -240,6 +250,23 @@
 
 
             }
+
+          $scope.keyPress2 =function(e) {
+
+
+                 $scope.activeCell = $scope.sheet.activeCell();
+                 $scope.selectionRow=$scope.activeCell.topLeft.row;
+                 $scope.selectionCol=$scope.activeCell.topLeft.col;
+
+                 var valueSheet = $scope.lookup_spreadsheet.activeSheet();
+                 var valueCell = valueSheet.activeCell();
+                 var valueRow = valueCell.topLeft.row;
+                 var valueCol = valueCell.topLeft.col;
+
+  	             $scope.sheet.range($scope.activeCell.topLeft).value(valueSheet.range(valueCell.topLeft).values()[0][0]);
+
+                 debugger;
+          }
 
           $scope.hello = "Hello from Controller!";
 
