@@ -75,22 +75,34 @@
   var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
       .controller("MyCtrl", function($scope,$http){
 
-
+          $scope.firstRun = true;
           $scope.onchange = function (arg) {
             debugger;
-            kendoConsole.log(arg.range._ref.topLeft);
-            kendoConsole.log("Spreadsheet change, new value: " + arg.range.value());
 
-            var myrow = 1+ $scope.activeCell.topLeft.row;
-            console.log(myrow);
-            $scope.sheet.range("A"+myrow).background("#f4eb42");
+            if (!$scope.firstRun) {
 
-            var kk = $scope.sheet.range("A"+myrow);
+                try {
 
-            debugger;
-            console.log(kk);
 
-            $scope.sheet.range("A"+myrow).value("C");
+                kendoConsole.log(arg.range._ref.topLeft.row);
+                kendoConsole.log(arg.range._ref.topLeft.col);
+                var myrow = 1+arg.range._ref.topLeft.row;
+                var mycol = 1+arg.range._ref.topLeft.col;
+
+                kendoConsole.log(myrow);
+                kendoConsole.log(mycol);
+
+                $scope.sheet.range("A"+myrow).background("#f4eb42");
+                $scope.sheet.range("A"+myrow).value("C");
+
+                }
+                catch(err) {
+                    kendoConsole.log(err);
+                }
+
+            } else {
+                $scope.firstRun = false;
+            }
           }
 
           kendo.spreadsheet.registerEditor("salesclass", function(){
@@ -325,6 +337,11 @@
 
                  var myrow = 1+ $scope.activeCell.topLeft.row;
                  console.log(myrow);
+
+                 $scope.sheet = $scope.spreadsheet.activeSheet();
+
+                 debugger;
+
                  $scope.sheet.range("A"+myrow).background("#f4eb42");
 
                  var kk = $scope.sheet.range("A"+myrow);
