@@ -35,38 +35,38 @@
 
 </head>
 <body ng-view resize>
-    <div ng-controller="MyCtrl">
+<div ng-controller="MyCtrl">
 
-        <a class="offline-button" href="../index.html">Export Brochure to Excel</a>
-        <div kendo-window="wBrochureMain" k-title="'Brochure Forecast: UK 2017/01 '"
-            k-width="1400" k-height="385" k-visible="true"
-            k-content="{ url: '../spreadsheet/index.html' }">
-        </div>
-        <div kendo-window="wBrochureHistory" k-title="'Brochure History'"
-             k-width="400" k-height="300" k-visible="false"
-             k-content="{ url: '../content/web/loremIpsum.html' }">
-        </div>
-        <div kendo-window="wBrochureStages" k-title="'Brochure Stages'"
-             k-width="600" k-height="200" k-visible="false"
-             k-content="{ url: '../content/web/loremIpsum.html' }">
-        </div>
-        <div kendo-window="wBrochureImages" k-title="'Brochure Images'"
-             k-width="400" k-height="300" k-visible="true"
-             k-content="{ url: './images.html' }">
-        </div>
-        <div kendo-window="wBrochureProducts" k-title="'Product Images'"
-             k-width="200" k-height="300" k-visible="true"
-             k-content="{ url: './product.html' }">
-        </div>
-        <div kendo-window="wBrochureChart" k-title="'Brochure Chart'"
-             k-width="400" k-height="300" k-visible="true"
-             k-content="{ url: './chart.html' }">
-        </div>
-        <div kendo-window="wBrochureNotes" k-title="'Notes'"
-             k-width="600" k-height="200" k-visible="false"
-             k-content="{ url: '../content/web/loremIpsum.html' }">
-        </div>
+    <a class="offline-button" href="../index.html">Export Brochure to Excel</a>
+    <div kendo-window="wBrochureMain" k-title="'Brochure Forecast: UK 2017/01 '"
+         k-width="1400" k-height="385" k-visible="true"
+         k-content="{ url: '../spreadsheet/index.html' }">
     </div>
+    <div kendo-window="wBrochureHistory" k-title="'Brochure History'"
+         k-width="400" k-height="300" k-visible="false"
+         k-content="{ url: '../content/web/loremIpsum.html' }">
+    </div>
+    <div kendo-window="wBrochureStages" k-title="'Brochure Stages'"
+         k-width="600" k-height="200" k-visible="false"
+         k-content="{ url: '../content/web/loremIpsum.html' }">
+    </div>
+    <div kendo-window="wBrochureImages" k-title="'Brochure Images'"
+         k-width="400" k-height="300" k-visible="true"
+         k-content="{ url: './images.html' }">
+    </div>
+    <div kendo-window="wBrochureProducts" k-title="'Product Images'"
+         k-width="200" k-height="300" k-visible="true"
+         k-content="{ url: './product.html' }">
+    </div>
+    <div kendo-window="wBrochureChart" k-title="'Brochure Chart'"
+         k-width="600" k-height="200" k-visible="false"
+         k-content="{ url: '../content/web/loremIpsum.html' }">
+    </div>
+    <div kendo-window="wBrochureNotes" k-title="'Notes'"
+         k-width="600" k-height="200" k-visible="false"
+         k-content="{ url: '../content/web/loremIpsum.html' }">
+    </div>
+</div>
 
 <script>
 
@@ -74,23 +74,6 @@
 
   var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
       .controller("MyCtrl", function($scope,$http){
-
-          $scope.onSeriesHover = function(e) {
-                kendoConsole.log(kendo.format("event :: seriesHover ({0} : {1})", e.series.name, e.value));
-            };
-
-          $scope.electricity = new kendo.data.DataSource({
-                transport: {
-                    read: {
-                        url: "../content/dataviz/js/spain-electricity.json",
-                        dataType: "json"
-                    }
-                },
-                sort: {
-                    field: "year",
-                    dir: "asc"
-                }
-            });
 
           $scope.firstRun = true;
           $scope.onchange = function (arg) {
@@ -118,71 +101,109 @@
                 }
 
             } else {
-
+                $scope.firstRun = false;
             }
-          }
+          };
 
-          kendo.spreadsheet.registerEditor("salesclass", function(){
-                var context, dlg, model;
+          kendo.spreadsheet.registerEditor("pricingGroup", function(){
+              var context, dlg, model;
 
-                // Further delay the initialization of the UI until the `edit` method is
-                // actually called, so here just return the object with the required API.
+              // Further delay the initialization of the UI until the `edit` method is
+              // actually called, so here just return the object with the required API.
 
-                return {
-                    edit: function(options) {
-                        context = options;
-                        open();
-                    },
-                    icon: "k-i-custom k-i-background"
-                };
+              return {
+                  edit: function(options) {
+                      console.log("inside edit bit");
+                      context = options;
+                      open();
+                  },
+                  icon: "k-font-icon k-i-search"
+              };
 
-                // This function actually creates the UI if not already there, and
-                // caches the dialog and the model.
-                function create() {
-                    if (!dlg) {
-                        model = kendo.observable({
-                            value: "#000000",
-                            ok: function() {
-                                // This is the result when OK is clicked. Invoke the
-                                // callback with the value.
-                                context.callback(model.value);
-                                dlg.close();
-                            },
-                            cancel: function() {
-                                dlg.close();
-                            }
-                        });
+              // This function actually creates the UI if not already there, and
+              // caches the dialog and the model.
+              function create() {
+                  console.log("inside create ");
+                  if (!dlg) {
+                      console.log("inside !dlg");
 
 
-                        <!--  "  <div data-role='flatcolorpicker' data-bind='value: value'></div>" + -->
+                      model = kendo.observable({
+                          value: '',
+                          ok: function() {
+                              // This is the result when OK is clicked. Invoke the
+                              // callback with the value.
+                              context.callback(model.value);
+                              dlg.close();
+                          },
+                          cancel: function() {
+                              dlg.close();
+                          }
+                      });
+                      var el = $("<div data-visible='true' style='width: 100%' data-role='window' data-modal='true' data-resizable='false' data-title='Choose a pricing group'>" +
+                              " <input id='pricingGroupAutocomplete' style='width: 100%;' data-bind='value: value' /> " +
+                              "  <div style='margin-top: 1em; text-align: right'>" +
+                              "    <button style='width: 5em' class='k-button' data-bind='click: ok'>OK</button>" +
+                              "    <button style='width: 5em' class='k-button' data-bind='click: cancel'>Cancel</button>" +
+                              "  </div>" +
+                              "</div>");
 
-                        var el = $("<div data-visible='true' data-role='window' data-modal='true' data-resizable='false' data-title='Select Foresight Sales Class:'>" +
-                                   "    <h4>Select Sales Class:</h4>" +
-                                   "    <input kendo-auto-complete ng-model='value' k-data-source='salesClasses' style='width: 100%;' />" +
-                                   "    <p class='demo-hint'>Your selection: {{ value }}</p>"+
-                                   "    <button style='width: 5em' class='k-button' data-bind='click: ok'>OK</button>" +
-                                   "    <button style='width: 5em' class='k-button' data-bind='click: cancel'>Cancel</button>" +
-                                   "</div>");
-                        kendo.bind(el, model);
 
-                        // Cache the dialog.
-                        dlg = el.getKendoWindow();
-                    }
-                }
+                      kendo.bind(el, model);
 
-                function open() {
-                    create();
-                    dlg.open();
-                    dlg.center();
+                      // Cache the dialog.
+                      dlg = el.getKendoWindow();
+                  }
+              }
 
-                    // If the selected cell already contains some value, reflect
-                    // it in the custom editor.
-                    var value = context.range.value();
-                    if (value != null) {
-                        model.set("value", value);
-                    }
-                }
+              function open() {
+
+                  console.log("open ");
+                  create();
+                  var data = [
+                      'Color Anew Eye/Face/Lip',
+                      'Color Eye Avon Color Eyeshadow/Brow',
+                      'Color Eye Avon Color Liners',
+                      'Color Eye Avon Color Mascara',
+                      'Color Eye Color Trend Eyeshadow',
+                      'Color Eye Color Trend Liner/Mascara',
+                      'Color Face Avon Color Blush/AllOverMakeup',
+                      'Color Face Avon Color Foundation',
+                      'Color Face Avon Color Powder',
+                      'Color Face Color Trend',
+                      'Color Implements',
+                      'Color Lip Avon Color Gloss/Tint/LiquidColor',
+                      'Color Lip Avon Color Lipstick/ColoringPencilPen',
+                      'Color Lip Color Trend Lipstick/ColoringPencilPen/Gloss/Tint/Liquid Color',
+                      'Color Nail Avon Color Cond/Care/Problem/Treat',
+                      'Color Nail Avon Color Enamel/Base/Top',
+                      'Color Not Modeled',
+                      'Fragrance After Shave Mn',
+                      'Fragrance Body Wm Value/Mass',
+                      'Fragrance Deodorant Mn Value/Mass',
+                      'Fragrance Deodorant Wn Value/Mass'
+              ];
+
+                  //create AutoComplete UI component
+                  $("#pricingGroupAutocomplete").kendoAutoComplete({
+                      dataSource: data,
+                      filter: "startswith",
+                      placeholder: "Select a pricing group..."
+                  });
+
+                  dlg.open();
+                  dlg.center();
+
+                  // If the selected cell already contains some value, reflect
+                  // it in the custom editor.
+                  var value = context.range.value();
+                  if (value != null) {
+                      model.set("value", value);
+                  }
+              }
           });
+
+
 
           $scope.selectionPrevRow=-1;
           $scope.selectionPrevCol=-1;
@@ -193,39 +214,28 @@
           $scope.keyPress =function(e) {
 
 
-                 $scope.firstRun = false;
-
                  debugger;
 
                  console.log($scope.wBrochureImages);
 
-                 $scope.wBrochureChart.wrapper[0].style.zIndex=$scope.windowsZIndex[3][1];
                  $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
                  $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
                  $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
 
-
-                 debugger;
 
                  if (!$scope.wBrochureImagesVisible) {
                     $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
                     $scope.wBrochureImages.restore();
                     $scope.wBrochureProducts.setOptions({position: { top: "420px",left: "405px" }});
                     $scope.wBrochureProducts.restore();
-                    $scope.wBrochureChart.setOptions({position: { top: "420px",left: "605px" }});
-                    $scope.wBrochureChart.restore();
                     $scope.wBrochureImagesVisible=true;
                     debugger;
                  }
 
-                 debugger;
-
-                 $scope.wBrochureChart.wrapper[0].style.zIndex=$scope.windowsZIndex[3][1];
                  $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
                  $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
                  $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
 
-                 debugger;
 
                  $scope.selectionPrevRow=$scope.selectionRow;
                  $scope.selectionPrevCol=$scope.selectionCol;
@@ -286,12 +296,6 @@
 
                         debugger;
                         console.log("--->"+$scope.sheet.range($scope.activeCell.topLeft).values());
-
-                        for (var e=2;e<7;e++) {
-                            $scope.sheet2.range("A"+e).background("white");
-                            $scope.sheet2.range("A"+e).color("black");
-                            $scope.sheet2.range("A"+e).bold(false);
-                        }
 
                         for (var e=2;e<7;e++) {
                             var x = $scope.sheet.range($scope.activeCell.topLeft).values()[0][0];
@@ -474,10 +478,6 @@
             $scope.wBrochureProducts.setOptions({position: { top: "710px",left: "405px" }});
             $scope.wBrochureProducts.minimize();
 
-            $scope.wBrochureChart.setOptions({ actions: ["Minimize", "Maximize"] });
-            $scope.wBrochureChart.setOptions({position: { top: "710px",left: "605px" }});
-            $scope.wBrochureChart.minimize();
-
             $scope.wBrochureImages.setOptions({ actions: ["Pin","Expand","Collapse","Custom", "Minimize", "Maximize"] });
             $scope.wBrochureImages.setOptions({position: { top: "710px",left: "1px" }});
             $scope.wBrochureImages.wrapper.find(".k-i-custom").click(function (e) {
@@ -494,7 +494,7 @@
             });
             $scope.wBrochureImages.minimize();
 
-            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10050],['wBrochureProducts',10055],['wBrochureChart',10060 ]];
+            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10050],['wBrochureProducts',10055] ];
 
             ////////////////////////
 
@@ -520,7 +520,14 @@
 
 
 
-
+            console.log($scope.wBrochureChart);
+            $scope.wBrochureChart.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
+            $scope.wBrochureChart.setOptions({position: { top: "95px",left: "5px" }});
+            $scope.wBrochureChart.wrapper.find(".k-i-custom").click(function (e) {
+                alert("wBrochureChart - Custom action button clicked");
+                e.preventDefault();
+            });
+            $scope.wBrochureChart.minimize();
 
             console.log($scope.wBrochureNotes);
             $scope.wBrochureNotes.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
@@ -650,7 +657,7 @@
 
                         debugger;
 
-                        //$scope.sheet.range("M2:M2000").editor("salesclass");
+                        $scope.sheet.range("L2:L2000").editor("pricingGroup");
 
                         var x = $scope.sheet.range("B1");
 
@@ -685,17 +692,6 @@
                               messageTemplate: "Valid values are: \n NEW COI,\nIN-LINE (EXCL NR),\nEXCESS,\nNEW REPEAT"
                         });
 
-                        $scope.sheet.range("P2:P2500").validation({
-                              dataType: "number",
-                              showButton: true,
-                              comparerType: "between",
-                              from: '0',
-                              to: '1500',
-                              type: 'warning',
-                              allowNulls: false,
-                              titleTemplate: "Invalid Page Weight",
-                              messageTemplate: "Valid values are: 0% - 1500%"
-                        });
 
                         $scope.sheet.columnWidth(14, 150);
                         $scope.sheet.columnWidth(15, 150);
@@ -818,3 +814,4 @@
 
 </body>
 </html>
+
