@@ -75,6 +75,24 @@
   var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
       .controller("MyCtrl", function($scope,$http){
 
+
+          $scope.onchange = function (arg) {
+            debugger;
+            kendoConsole.log(arg.range._ref.topLeft);
+            kendoConsole.log("Spreadsheet change, new value: " + arg.range.value());
+
+            var myrow = 1+ $scope.activeCell.topLeft.row;
+            console.log(myrow);
+            $scope.sheet.range("A"+myrow).background("#f4eb42");
+
+            var kk = $scope.sheet.range("A"+myrow);
+
+            debugger;
+            console.log(kk);
+
+            $scope.sheet.range("A"+myrow).value("C");
+          }
+
           kendo.spreadsheet.registerEditor("salesclass", function(){
                 var context, dlg, model;
 
@@ -316,18 +334,7 @@
 
                  $scope.sheet.range("A"+myrow).value("C");
 
-                 debugger;
-                 <!-- ListValues!A$1:B$1 -->
-                 kk.validation({
-                      dataType: "list",
-                      showButton: true,
-                      comparerType: "list",
-                      from: '{ "A", "B", "C" }',
-                      allowNulls: true,
-                      type: "reject",
-                      titleTemplate: "Invalid value",
-                      messageTemplate: "Valid values are A,B,C."
-                    });
+
 
                  debugger;
           }
@@ -595,7 +602,7 @@
 
                         debugger;
 
-                        $scope.sheet.range("M2:M2000").editor("salesclass");
+                        //$scope.sheet.range("M2:M2000").editor("salesclass");
 
                         var x = $scope.sheet.range("B1");
 
@@ -618,24 +625,19 @@
                         $scope.sheet.columnWidth(12, 200);
                         $scope.sheet.columnWidth(13, 200);
 
-                        /*
-                        $scope.sheet.rows[4].cells[13].
 
-                        validation: {
-                             dataType: "list",
-                             showButton: true,
-                             comparerType: "list",
-                             from: '{ "Foo item 1", "Bar item 2", "Baz item 3" }',
-                             allowNulls: true,
-                             type: "reject"
-                         } }
-          $scope.salesClasses = [
-              "NEW COI",
-              "IN-LINE (EXCL NR)",
-              "EXCESS",
-              "NEW REPEAT"
-          ];
-*/
+                        $scope.sheet.range("M2:M2500").validation({
+                              dataType: "list",
+                              showButton: true,
+                              comparerType: "list",
+                              from: '{ "NEW COI","IN-LINE (EXCL NR)","EXCESS","NEW REPEAT" }',
+                              allowNulls: false,
+                              type: "reject",
+                              titleTemplate: "Invalid Sales Class",
+                              messageTemplate: "Valid values are: \n NEW COI,\nIN-LINE (EXCL NR),\nEXCESS,\nNEW REPEAT"
+                        });
+
+
                         $scope.sheet.columnWidth(14, 150);
                         $scope.sheet.columnWidth(15, 150);
                         $scope.sheet.columnWidth(16, 150);
