@@ -130,11 +130,14 @@
 
               return {
                   edit: function(options) {
+                      console.log("inside edit bit");
                       context = options;
                       open();
                   },
                   icon: "k-font-icon k-i-search"
               };
+
+
 
               // This function actually creates the UI if not already there, and
               // caches the dialog and the model.
@@ -156,8 +159,10 @@
                               dlg.close();
                           }
                       });
-                      var el = $("<div data-visible='true' style='width: 100%' data-role='window' data-modal='true' data-resizable='false' data-title='Choose a pricing group'>" +
+                      var el = $("<div data-visible='true' style='width: 600px; height: 500px;' data-role='window' data-modal='true' data-resizable='false' data-title='Choose a pricing group'>" +
                               " <input id='pricingGroupAutocomplete' style='width: 100%;' data-bind='value: value' /> " +
+                               " <br/> <br/><br/>"+
+                              " <select multiple='multiple' id='customers' data-bind='value: value'></select> "+
                               "  <div style='margin-top: 1em; text-align: right'>" +
                               "    <button style='width: 5em' class='k-button' data-bind='click: ok'>OK</button>" +
                               "    <button style='width: 5em' class='k-button' data-bind='click: cancel'>Cancel</button>" +
@@ -169,12 +174,16 @@
 
                       // Cache the dialog.
                       dlg = el.getKendoWindow();
+                      debugger;
+                      console.log('DLG:'+dlg);
                   }
               }
 
               function open() {
 
                   console.log("open ");
+
+
                   create();
                   var data = [
                       'Color Anew Eye/Face/Lip',
@@ -199,13 +208,27 @@
                       'Fragrance Deodorant Mn Value/Mass',
                       'Fragrance Deodorant Wn Value/Mass'
               ];
-
+                  var myPG = new kendo.data.ObservableArray([]);
                   //create AutoComplete UI component
                   $("#pricingGroupAutocomplete").kendoAutoComplete({
                       dataSource: data,
                       filter: "startswith",
                       placeholder: "Select a pricing group..."
                   });
+
+                 $("#customers").kendoMultiSelect({
+                    placeholder: "Select a pricing group...",
+                    height: 400,
+                    dataSource: data,
+                    change: function(e) {
+
+                        var value = this.value();
+                        debugger;
+                        console.log(value);
+                        // Use the value of the widget
+                      }
+                });
+
 
                   dlg.open();
                   dlg.center();
@@ -687,7 +710,7 @@
 
                         debugger;
 
-                        //$scope.sheet.range("M2:M2000").editor("salesclass");
+                        $scope.sheet.range("L2:L2000").editor("pricingGroup");
 
                         var x = $scope.sheet.range("B1");
 
