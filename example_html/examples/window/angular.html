@@ -75,7 +75,7 @@
   var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
       .controller("MyCtrl", function($scope,$http){
 
-          kendo.spreadsheet.registerEditor("color", function(){
+          kendo.spreadsheet.registerEditor("salesclass", function(){
                 var context, dlg, model;
 
                 // Further delay the initialization of the UI until the `edit` method is
@@ -86,7 +86,7 @@
                         context = options;
                         open();
                     },
-                    icon: "k-i-expand k-i-background"
+                    icon: "k-i-custom k-i-background"
                 };
 
                 // This function actually creates the UI if not already there, and
@@ -105,12 +105,16 @@
                                 dlg.close();
                             }
                         });
-                        var el = $("<div data-visible='true' data-role='window' data-modal='true' data-resizable='false' data-title='Select color'>" +
-                                   "  <div data-role='flatcolorpicker' data-bind='value: value'></div>" +
-                                   "  <div style='margin-top: 1em; text-align: right'>" +
+
+
+                        <!--  "  <div data-role='flatcolorpicker' data-bind='value: value'></div>" + -->
+
+                        var el = $("<div data-visible='true' data-role='window' data-modal='true' data-resizable='false' data-title='Select Foresight Sales Class:'>" +
+                                   "    <h4>Select Sales Class:</h4>" +
+                                   "    <input kendo-auto-complete ng-model='value' k-data-source='salesClasses' style='width: 100%;' />" +
+                                   "    <p class='demo-hint'>Your selection: {{ value }}</p>"+
                                    "    <button style='width: 5em' class='k-button' data-bind='click: ok'>OK</button>" +
                                    "    <button style='width: 5em' class='k-button' data-bind='click: cancel'>Cancel</button>" +
-                                   "  </div>" +
                                    "</div>");
                         kendo.bind(el, model);
 
@@ -304,7 +308,26 @@
                  var myrow = 1+ $scope.activeCell.topLeft.row;
                  console.log(myrow);
                  $scope.sheet.range("A"+myrow).background("#f4eb42");
+
+                 var kk = $scope.sheet.range("A"+myrow);
+
+                 debugger;
+                 console.log(kk);
+
                  $scope.sheet.range("A"+myrow).value("C");
+
+                 debugger;
+                 <!-- ListValues!A$1:B$1 -->
+                 kk.validation({
+                      dataType: "list",
+                      showButton: true,
+                      comparerType: "list",
+                      from: '{ "A", "B", "C" }',
+                      allowNulls: true,
+                      type: "reject",
+                      titleTemplate: "Invalid value",
+                      messageTemplate: "Valid values are A,B,C."
+                    });
 
                  debugger;
           }
@@ -572,7 +595,7 @@
 
                         debugger;
 
-                        //$scope.sheet.range("B2:B2000").editor("color");
+                        $scope.sheet.range("M2:M2000").editor("salesclass");
 
                         var x = $scope.sheet.range("B1");
 
@@ -595,6 +618,24 @@
                         $scope.sheet.columnWidth(12, 200);
                         $scope.sheet.columnWidth(13, 200);
 
+                        /*
+                        $scope.sheet.rows[4].cells[13].
+
+                        validation: {
+                             dataType: "list",
+                             showButton: true,
+                             comparerType: "list",
+                             from: '{ "Foo item 1", "Bar item 2", "Baz item 3" }',
+                             allowNulls: true,
+                             type: "reject"
+                         } }
+          $scope.salesClasses = [
+              "NEW COI",
+              "IN-LINE (EXCL NR)",
+              "EXCESS",
+              "NEW REPEAT"
+          ];
+*/
                         $scope.sheet.columnWidth(14, 150);
                         $scope.sheet.columnWidth(15, 150);
                         $scope.sheet.columnWidth(16, 150);

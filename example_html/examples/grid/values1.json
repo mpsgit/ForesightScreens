@@ -1,4 +1,7 @@
 [
-  {"ID" : "1", "VALUE" : "A"},
-  {"ID" : "2", "VALUE" : "B"}
+  {"ID" : "1", "VALUE" : "REGULAR PRICE"},
+  {"ID" : "2", "VALUE" : "STRAIGHT DISCOUNTING"},
+  {"ID" : "3", "VALUE" : "GWP/PWP/ORDER BUILDERS"},
+  {"ID" : "4", "VALUE" : "STRAIGHT DISCOUNTING"},
+  {"ID" : "5", "VALUE" : "COMBINATION OFFERS"}
 ]
