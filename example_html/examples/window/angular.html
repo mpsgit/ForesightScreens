@@ -59,8 +59,8 @@
              k-content="{ url: './product.html' }">
         </div>
         <div kendo-window="wBrochureChart" k-title="'Brochure Chart'"
-             k-width="600" k-height="200" k-visible="false"
-             k-content="{ url: '../content/web/loremIpsum.html' }">
+             k-width="400" k-height="300" k-visible="true"
+             k-content="{ url: './chart.html' }">
         </div>
         <div kendo-window="wBrochureNotes" k-title="'Notes'"
              k-width="600" k-height="200" k-visible="false"
@@ -74,6 +74,20 @@
 
   var myAppModule =  angular.module("KendoDemos", [ "kendo.directives" ])
       .controller("MyCtrl", function($scope,$http){
+
+
+          $scope.electricity = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: "../content/dataviz/js/spain-electricity.json",
+                        dataType: "json"
+                    }
+                },
+                sort: {
+                    field: "year",
+                    dir: "asc"
+                }
+            });
 
           $scope.firstRun = true;
           $scope.onchange = function (arg) {
@@ -101,7 +115,7 @@
                 }
 
             } else {
-                $scope.firstRun = false;
+
             }
           }
 
@@ -176,28 +190,39 @@
           $scope.keyPress =function(e) {
 
 
+                 $scope.firstRun = false;
+
                  debugger;
 
                  console.log($scope.wBrochureImages);
 
+                 $scope.wBrochureChart.wrapper[0].style.zIndex=$scope.windowsZIndex[3][1];
                  $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
                  $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
                  $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
 
+
+                 debugger;
 
                  if (!$scope.wBrochureImagesVisible) {
                     $scope.wBrochureImages.setOptions({position: { top: "420px",left: "1px" }});
                     $scope.wBrochureImages.restore();
                     $scope.wBrochureProducts.setOptions({position: { top: "420px",left: "405px" }});
                     $scope.wBrochureProducts.restore();
+                    $scope.wBrochureChart.setOptions({position: { top: "420px",left: "605px" }});
+                    $scope.wBrochureChart.restore();
                     $scope.wBrochureImagesVisible=true;
                     debugger;
                  }
 
+                 debugger;
+
+                 $scope.wBrochureChart.wrapper[0].style.zIndex=$scope.windowsZIndex[3][1];
                  $scope.wBrochureImages.wrapper[0].style.zIndex=$scope.windowsZIndex[1][1];
                  $scope.wBrochureProducts.wrapper[0].style.zIndex=$scope.windowsZIndex[2][1];
                  $scope.wBrochureMain.wrapper[0].style.zIndex=$scope.windowsZIndex[0][1];
 
+                 debugger;
 
                  $scope.selectionPrevRow=$scope.selectionRow;
                  $scope.selectionPrevCol=$scope.selectionCol;
@@ -258,6 +283,12 @@
 
                         debugger;
                         console.log("--->"+$scope.sheet.range($scope.activeCell.topLeft).values());
+
+                        for (var e=2;e<7;e++) {
+                            $scope.sheet2.range("A"+e).background("white");
+                            $scope.sheet2.range("A"+e).color("black");
+                            $scope.sheet2.range("A"+e).bold(false);
+                        }
 
                         for (var e=2;e<7;e++) {
                             var x = $scope.sheet.range($scope.activeCell.topLeft).values()[0][0];
@@ -440,6 +471,10 @@
             $scope.wBrochureProducts.setOptions({position: { top: "710px",left: "405px" }});
             $scope.wBrochureProducts.minimize();
 
+            $scope.wBrochureChart.setOptions({ actions: ["Minimize", "Maximize"] });
+            $scope.wBrochureChart.setOptions({position: { top: "710px",left: "605px" }});
+            $scope.wBrochureChart.minimize();
+
             $scope.wBrochureImages.setOptions({ actions: ["Pin","Expand","Collapse","Custom", "Minimize", "Maximize"] });
             $scope.wBrochureImages.setOptions({position: { top: "710px",left: "1px" }});
             $scope.wBrochureImages.wrapper.find(".k-i-custom").click(function (e) {
@@ -456,7 +491,7 @@
             });
             $scope.wBrochureImages.minimize();
 
-            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10050],['wBrochureProducts',10055] ];
+            $scope.windowsZIndex = [ ['wBrochureMain',10005],['wBrochureImages',10050],['wBrochureProducts',10055],['wBrochureChart',10060 ]];
 
             ////////////////////////
 
@@ -482,14 +517,7 @@
 
 
 
-            console.log($scope.wBrochureChart);
-            $scope.wBrochureChart.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
-            $scope.wBrochureChart.setOptions({position: { top: "95px",left: "5px" }});
-            $scope.wBrochureChart.wrapper.find(".k-i-custom").click(function (e) {
-                alert("wBrochureChart - Custom action button clicked");
-                e.preventDefault();
-            });
-            $scope.wBrochureChart.minimize();
+
 
             console.log($scope.wBrochureNotes);
             $scope.wBrochureNotes.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
@@ -654,6 +682,17 @@
                               messageTemplate: "Valid values are: \n NEW COI,\nIN-LINE (EXCL NR),\nEXCESS,\nNEW REPEAT"
                         });
 
+                        $scope.sheet.range("P2:P2500").validation({
+                              dataType: "number",
+                              showButton: true,
+                              comparerType: "between",
+                              from: '0',
+                              to: '1500',
+                              type: 'warning',
+                              allowNulls: false,
+                              titleTemplate: "Invalid Page Weight",
+                              messageTemplate: "Valid values are: 0% - 1500%"
+                        });
 
                         $scope.sheet.columnWidth(14, 150);
                         $scope.sheet.columnWidth(15, 150);
