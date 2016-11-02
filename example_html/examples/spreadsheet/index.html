@@ -4,12 +4,19 @@
         width:8px;
         background-color: #3e9ed6;
     }
+    .k-splitter > .k-splitbar-vertical {
+    height:8px;
+    background-color: #3e9ed6;
+    }
 </style>
-<kendo-splitter k-scope-field="lookup_splitter"  k-panes="[ null,{collapsible: true, resizable: false, size: '300px'}]" k-orientation="'horizontal'" style="width: 100%;height: 100%;">
-    <div id="mainsheet">
-        <kendo-spreadsheet k-change='onchange' ng-keyup="keyPress($event)" k-excel="{fileName: 'BrochureForecast_UK_2017_01.xlsx'}" ng-click="keyPress($event)" k-scope-field="spreadsheet" k-toolbar="false" sheetsbar="false" k-sheets="sheets" style="width: 100%; height: 100%;"></kendo-spreadsheet>
-    </div>
-    <div id="subsheet">
-        <kendo-spreadsheet ng-keyup="keyPress2($event)" ng-click="keyPress2($event)" k-scope-field="lookup_spreadsheet" k-columns="1" k-rows='1000' k-toolbar="false" sheetsbar="false" k-sheets="sheets2" style="width: 100%; height: 100%;"></kendo-spreadsheet>
-    </div>
+<kendo-splitter k-scope-field="stages_splitter"  k-panes="[ {collapsible: true, resizable: false, size: '200px'},null]" k-orientation="'vertical'" style="width: 100%;height: 100%;">
+    <kendo-spreadsheet k-scope-field="spreadsheetStages" k-toolbar="false" sheetsbar="false" k-sheets="sheetsStages" style="width: 100%; height: 100%;"></kendo-spreadsheet>
+    <kendo-splitter k-scope-field="lookup_splitter"  k-panes="[ null,{collapsible: true, resizable: false, size: '300px'}]" k-orientation="'horizontal'" k-columns="30" k-rows='5' style="width: 100%;height: 100%;">
+        <div id="mainsheet">
+            <kendo-spreadsheet k-change='onchange' ng-keyup="keyPress($event)" k-excel="{fileName: 'BrochureForecast_UK_2017_01.xlsx'}" ng-click="keyPress($event)" k-scope-field="spreadsheet" k-toolbar="false" sheetsbar="false" k-sheets="sheets" style="width: 100%; height: 100%;"></kendo-spreadsheet>
+        </div>
+        <div id="subsheet">
+            <kendo-spreadsheet ng-keyup="keyPress2($event)" ng-click="keyPress2($event)" k-scope-field="lookup_spreadsheet" k-columns="1" k-rows='1000' k-toolbar="false" sheetsbar="false" k-sheets="sheets2" style="width: 100%; height: 100%;"></kendo-spreadsheet>
+        </div>
+    </kendo-splitter>
 </kendo-splitter>

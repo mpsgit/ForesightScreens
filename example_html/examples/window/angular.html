@@ -453,6 +453,7 @@
           $scope.hello = "Hello from Controller!";
 
           $scope.sheets= [{ name: "Core Brochure" }];
+          $scope.sheetsStages= [{ name: "Stages" }];
           $scope.sheets2= [{ name: "Values" }];
 
           $scope.value1DataRecords = new kendo.data.ObservableArray([]);
@@ -510,6 +511,8 @@
             console.log($scope.lookup_splitter);
 
             $scope.lookup_splitter.collapse(".k-pane:last");
+
+            $scope.stages_splitter.collapse(".k-pane:first");
 
             console.log($scope.wBrochureMain);
             $scope.wBrochureMain.setOptions({ actions: ["Pin","Custom", "Minimize", "Maximize"] });
@@ -690,8 +693,63 @@
                         ]);
                         debugger;
 
+
+
+                        $scope.sheetStages = $scope.spreadsheetStages.activeSheet();
                         $scope.sheet = $scope.spreadsheet.activeSheet();
 
+                        $scope.sheetStages.frozenRows(1);
+                        $scope.sheetStages.frozenColumns(5);
+
+                        $scope.sheetStages.range("A1:T1").background("#ff4251");
+                        $scope.sheetStages.range("A1:T1").color("white");
+                        $scope.sheetStages.range("A1:T1").bold(true);
+
+                        $scope.sheetStages.range("B2:B"+($scope.excelDataRecords.length+1)).background("#3e9ed6");
+                        $scope.sheetStages.range("B2:B"+($scope.excelDataRecords.length+1)).color("white");
+
+/*
+                        {field: "SELECTED", title: " "},
+                                {field: "PAGE_NUMBER", title: "Spread"},
+                                {field: "PRFL_CD", title: "Profile Code"},
+                                {field: "PRFL_NM", title: "Profile Name"},
+                                {field: "OFFR_DESC_TXT", title: "Offer Description"},
+                                {field: "CATGRY_NM", title: "Category"},
+                                {field: "BRND_NM", title: "Brand"},
+                                {field: "FORM_GRP_DESC_TXT", title: "Form Group"},
+                                {field: "FORM_DESC_TXT", title: "Form"},
+                                {field: "SGMT_NM", title: "Segment"},
+                                {field: "GENDR_DESC_TXT", title: "Gender"},
+                                {field: "PRICING_GROUP", title: "Pricing Group"},
+                                {field: "SLS_CLS_DESC_TXT", title: "Sales Class"},
+                                {field: "PROMTN_DESC_TXT", title: "Promotion"},
+                                {field: "SLS_PRC_AMT", title: "Avg Selling Price"},
+                                {field: "PG_WGHT_PCT", title: "Page Weight %"},
+                                {field: "PG_TYP_DESC_TXT", title: "Page Type"},
+                                {field: "MICR_NCPSLTN_IND", title: "Micro"},
+                                {field: "SKU_COUNT", title: "Sku Count"},
+                                {field: "REG_PRC_AMT", title: "Regular Price"}
+                                */
+
+                        $scope.sheetStages.columnWidth(0, 20);
+                        $scope.sheetStages.columnWidth(1, 80);
+                        $scope.sheetStages.columnWidth(2, 100);
+                        $scope.sheetStages.columnWidth(3, 250);
+                        $scope.sheetStages.columnWidth(4, 250);
+                        $scope.sheetStages.columnWidth(5, 200);
+                        $scope.sheetStages.columnWidth(6, 200);
+                        $scope.sheetStages.columnWidth(7, 200);
+                        $scope.sheetStages.columnWidth(8, 200);
+                        $scope.sheetStages.columnWidth(9, 200);
+                        $scope.sheetStages.columnWidth(10, 100);
+                        $scope.sheetStages.columnWidth(11, 200);
+                        $scope.sheetStages.columnWidth(12, 200);
+                        $scope.sheetStages.columnWidth(13, 200);
+
+                        /////////////////////////////
+
+                        $scope.sheet.range("B2:B"+($scope.excelDataRecords.length+1)).background("#3e9ed6");
+                        $scope.sheet.range("B2:B"+($scope.excelDataRecords.length+1)).color("white");
 
                         $scope.sheet.frozenRows(1);
                         $scope.sheet.frozenColumns(5);
