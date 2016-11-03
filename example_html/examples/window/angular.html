@@ -120,6 +120,9 @@
             } else {
 
             }
+
+
+
           };
 
           kendo.spreadsheet.registerEditor("pricingGroup", function(){
@@ -252,6 +255,9 @@
           $scope.spreadSheetPanelOpen = false;
           $scope.keyPress =function(e) {
 
+                 debugger;
+                 console.log($scope.sheet.range("A2:C2").values());
+                 $scope.sheetStages.range("A2:C2").values($scope.sheet.range("A2:C2").values());
 
                  $scope.firstRun = false;
 
