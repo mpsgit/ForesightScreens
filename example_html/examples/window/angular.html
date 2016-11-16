@@ -561,7 +561,13 @@
 
                 e.preventDefault();
             });
-            $scope.wBrochureMain.maximize();
+
+            $scope.wBrochureMain.kendoMaximize=$scope.wBrochureMain.maximize;
+            $scope.wBrochureMain.maximize = function() {
+                    alert('before maximize');
+                    this.kendoMaximize();
+                    alert('after maximize');
+            };
             console.log($scope.wBrochureImages);
 
             $scope.wBrochureProducts.setOptions({ actions: ["Minimize", "Maximize"] });
