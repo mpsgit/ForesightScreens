@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html ng-app="KendoDemos">
+<html ng-app="KendoDemos" ng-controller="MyCtrl">
 <head>
-    <title>AngularJS</title>
+    <title>AngularJS --- {{ myheight }} </title>
     <meta charset="utf-8">
     <!--
     <link href="../content/shared/styles/examples-offline.css" rel="stylesheet">
@@ -35,10 +35,10 @@
 
 </head>
 <body ng-view resize>
-<div ng-controller="MyCtrl">
+<div >
 
     <a class="offline-button" href="../index.html">Export Brochure to Excel</a>
-    <div kendo-window="wBrochureMain" k-title="'Brochure Forecast: UK 2017/01 '"
+    <div kendo-window="wBrochureMain" size-watcher size-watcher-height="myheight" k-title="'Brochure Forecast: UK 2017/01 '"
          k-width="1400" k-height="385" k-visible="true"
          k-content="{ url: '../spreadsheet/index.html' }">
     </div>
@@ -947,6 +947,23 @@
 
 
       });
+
+    myAppModule.directive("sizeWatcher", ['$timeout', function ($timeout) {
+        return {
+            scope: {
+                sizeWatcherHeight: '=',
+                sizeWatcherWidth: '=',
+            },
+            link: function( scope, elem, attrs ){
+                function checkSize(){
+                    scope.sizeWatcherHeight = elem.prop('offsetHeight');
+                    scope.sizeWatcherWidth = elem.prop('clientWidth');
+                    $timeout( checkSize, 1000 );
+                }
+                checkSize();
+            }
+        };
+    }]);
 
     myAppModule.directive('resize', function ($window) {
     return function ($scope, element) {
